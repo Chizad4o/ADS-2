@@ -1,56 +1,59 @@
 // Copyright 2021 NNTU-CS
 
 int countPairs1(int *arr, int len, int value) {
- int count = 0;
-	for (int i = 0; i < len - 1; ++i) {
-      for (int j = i + 1; j < len; ++j) {
-	        if (arr[i] + arr[j] == value) {
-	            ++count;
-	        }
-	    }
+  int count = 0;
+  for (int i = 0; i < len - 1; ++i) {
+    for (int j = i + 1; j < len; ++j) {
+      if (arr[i] + arr[j] == value) {
+        ++count;
+      }
     }
+  }
     return count;
 }
 
 int countPairs2(int *arr, int len, int value) {
-    int Pres = 0;
-    int count = 0;
-    while (arr[len - 1] > value && len > 0) {
-        --len;
-    }
-    if (!len) {
-        return 0;
-    }
-    for (int j = len - 1; j >= 0; --j) {
-        Pres = 0;
-        for (int Pres = 0; Pres < j; ++Pres) {
-            if (arr[Pres] + arr[j] == value)
-                ++count;
-        }
-    }
-    return count;
+  int count = 0;
+  int pos = len-1;
+  while (arr[0] + arr[pos] > value)
+    pos--;
+  for (int i = 0; i <= pos; i++)
+    for (int j = i + 1; j <= pos; j++)
+    if (arr[i] + arr[j] == value)
+      count++;
+  return count;
 }
 
 int countPairs3(int *arr, int len, int value) {
-    int count = 0;
-    for (int i = 0; i < len - 1; i++) {
-        int leftBorder = i + 1, rightBorder = len;
-        while (leftBorder < rightBorder) {
-            int center = (leftBorder + rightBorder) / 2;
-            if (arr[center] == (value - arr[i])) {
-                while (arr[center - 1] == (value - arr[i]) && (center > leftBorder)) {
-                    --center;
-                }
-                while (arr[center] == (value - arr[i])) {
-                    ++center;
-                    ++count;
-                }
-                break;
-            } else if (arr[center] > (value - arr[i])) {
-                rightBorder = center;
-            } else {
-                leftBorder = center + 1;
-            }
-        }
+  int count = 0, first, last, mid;
+  for (int i = 0; i < len - 1; i++) {
+    first = i+1;
+    last = len - 1;
+    mid = (first + last) / 2;
+    while (last != first) {
+      if (arr[i] + arr[mid] > value) {
+        last = mid;
+        mid = (first + last) / 2;
+      } else if (arr[i] + arr[mid] < value) {
+        first = mid + 1;
+        mid = (first + last) / 2;
+      } else {
+        break;
+      }
     }
+    if (arr[i] + arr[mid] == value) {
+      count++;
+      int k = mid-1;
+      while ((k > i/*-1*/) && (arr[k] + arr[i] == value)) {
+        count++;
+        k--;
+      }
+      k = mid + 1;
+      while ((k < len) && (arr[k] + arr[i] == value)) {
+        count++;
+        k++;
+      }
+    }
+  }
+  return count;
 }
